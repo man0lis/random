@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 			char result_buf[5];
 			int number1;
 			int number2;
-			int result;
+			int result = 0;
 			
 			//initial copy of the given value to the resultbuffer
 			strcpy(result_buf,argv[1]);
