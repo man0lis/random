@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 				//calc result
 				result = number1 - number2;
 				//print current calculation
-				printf("%d - %d = %d\n",number1,number2,result);
+				printf("%d - %04d = %d\n",number1,number2,result);
 				//write result in the result_buffer
 				sprintf(result_buf,"%04d",result);
 			}
