@@ -1,3 +1,19 @@
+/*
+ *      kaprekar.c
+ *      
+ *      Copyright 2009 Robin Nehls <nehls@mi.fu-berlin.de>
+ *      
+ *      This program is free software; you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation; either version 2 of the License, or
+ *      (at your option) any later version.
+ *      
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,6 +22,7 @@ int checknumber(char* value)
 {
 	int x; 		//counter in forloops
 	char check;	//check character for last for
+	
 	//check if number is 4 digits long
 	if(strlen(value) != 4) {
 		printf("The number must be 4 digits long.\n");
@@ -32,7 +49,7 @@ int checknumber(char* value)
 	return 1;
 }
 
-void bubbleSort(char* array, int array_size, int type)
+void bubbleSort(char* array, int array_size, int type) //type=1 sorts ascending everything else descending
 {
 	int i, j, temp;
 
@@ -102,8 +119,13 @@ int main(int argc, char **argv)
 		}
 	}
 	else {
+		printf("=======================================================================================\n");
+		printf("This program performs Kaprekar's operation for a given 4 digit number.\n" \
+			   "For more information on Kaprekar's operation and Kaprekar's constant, vist:\n" \
+			   "http://en.wikipedia.org/wiki/Kaprekar_constant\n");
+		printf("=======================================================================================\n\n");
 		printf("Usage: %s <number>\n",argv[0]);
-		printf("Number have to consist of 4 digits (but not all the same) Leading zeros are allowed.\n");
+		printf("Number have to consist of 4 digits (but not all the same) Leading zeros are allowed.\n\n");
 		return 1;
 	}
 	return 0;
