@@ -55,19 +55,10 @@ void bubbleSort(char* array, int array_size, int type) //type=1 sorts ascending 
 
 	for (i = (array_size - 1); i > 0; i--) {
 		for (j = 1; j <= i; j++) {
-			if(type == 1) {
-				if (array[j-1] < array[j]) {
-					temp = array[j-1];
-					array[j-1] = array[j];
-					array[j] = temp;
-				}
-			}
-			else {
-				if (array[j-1] > array[j]) {
-					temp = array[j-1];
-					array[j-1] = array[j];
-					array[j] = temp;
-				}
+			if (((type == 1) && (array[j-1] < array[j])) || ((type != 1) && (array[j-1] > array[j]))) {
+				temp = array[j-1];
+				array[j-1] = array[j];
+				array[j] = temp;
 			}
 		}
 	}
