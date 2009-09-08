@@ -17,19 +17,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gmp.h>
 
 int be_verbose = 0;
 int use_recursive = 0;
 
-int fak_it(int x)
+void fak_it(mpz_t *x)
 {
-	int i;
-	int returnvalue = 1;
-	for(i=1;i<=x;++i) {
-		if (be_verbose == 1) printf("VERB: %d * %d\n",i,returnvalue);
-		returnvalue=returnvalue*i;
+	mpz_t i;
+	mpz_t returnvalue;
+	
+	mpz_init_set_ui(returnvalue, 1);
+	
+	for(mpz_init_set_ui(i,1); mpz_cmp(i,*x)<=0; mpz_add_ui(i,i,1)) {
+		if (be_verbose == 1) {
+			printf("VERB: ");
+			mpz_out_str(NULL,10,i);
+			printf(" * ");
+			mpz_out_str(NULL,10,returnvalue);
+			printf("\n");
+		}
+		mpz_mul(returnvalue,returnvalue,i);
 	}
-	return returnvalue;
+	mpz_set(*x,returnvalue);
 }
 
 int fak_rk(int x)
@@ -63,12 +73,19 @@ int main(int argc, char** argv)
 		return 1;		
 	}
 	
+	mpz_t num;
+	mpz_init_set_str (num, argv[1], 10);
+	
 	if (use_recursive == 1) {
 		printf("result: %d\nused recursive method\n", fak_rk(number));
 		return 0;
 	}
 	else {
-		printf("result: %d\nused iterativ method\n", fak_it(number));
+		fak_it(&num);
+		if(be_verbose) printf("result: ");
+		mpz_out_str(NULL,10,num);
+		printf("\n");
+		if(be_verbose) printf("used iterativ method\n");
 		return 0;
 	}
 }
