@@ -40,6 +40,10 @@ void fak_it(mpz_t *x)
 		mpz_mul(returnvalue,returnvalue,i);
 	}
 	mpz_set(*x,returnvalue);
+
+	//cleanup
+	mpz_clear(i);
+	mpz_clear(returnvalue);
 }
 
 int fak_rk(int x)
@@ -78,7 +82,6 @@ int main(int argc, char** argv)
 	
 	if (use_recursive == 1) {
 		printf("result: %d\nused recursive method\n", fak_rk(number));
-		return 0;
 	}
 	else {
 		fak_it(&num);
@@ -86,6 +89,9 @@ int main(int argc, char** argv)
 		mpz_out_str(NULL,10,num);
 		printf("\n");
 		if(be_verbose) printf("used iterativ method\n");
-		return 0;
 	}
+
+	mpz_clear(num);
+
+	return 0;
 }
