@@ -23,12 +23,14 @@
 #include <portaudio.h>
 #include <fftw3.h>
 
+#define VERSION "v0.1"
+
 int main(int argc, char* argv[]) {
-    //print versionstrings of linked libs
-    printf("Pitch Detect v0.1\nUsing: %s and %s\n", Pa_GetVersionText(),
+    //print version strings of linked libs
+    printf("Pitch Detect %s\nUsing: %s and %s\n",VERSION, Pa_GetVersionText(),
             fftw_version);
 
-    //initalise internal structures of portaudio
+    //initialize internal structures of portaudio
     PaError errorCode;
     fprintf(stderr, "Portaudio init: ");
     errorCode = Pa_Initialize();
@@ -37,6 +39,10 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
     fprintf(stderr, "done.\n");
+
+
+
+
 
     //terminate portaudio
     fprintf(stderr, "Portaudio kill: ");
