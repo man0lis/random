@@ -21,6 +21,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "portaudio.h"
+#include "SDL/SDL.h"
+
+typedef struct
+{
+    SDL_Surface *screen;
+    Uint32      color;
+}
+paUserData;
+
+#define WINDOW_X 1024
+#define WINDOW_Y 200
+#define FRAMES_PER_BUFFER 1024
+
+// function that draws a single pixel to a surface
+void DrawPixel(SDL_Surface *Surface, int x, int y,Uint16 color)
+{
+  Uint16 *Pixel;
+  Pixel = (Uint16 *)Surface->pixels + y*Surface->pitch/2 + x*2;
+  *Pixel = color;
+}
 
 // this callbackfunction is called by portaudio whenever a new buffer
 // is ready for processing
@@ -32,49 +52,96 @@ static int callMeBack(void *inputBuffer,
                       void *userData
                      )
 {
-    //needed for reading the arrays
+    // needed for working with the given values
     float *input  = (float *) inputBuffer;
     float *output = (float *) outputBuffer;
+    paUserData *data = (paUserData*)userData;
     unsigned int i;
-    
-    //if inputbuffer is not ready yet return
+
+    SDL_Surface *waveform;
+
+    // if inputbuffer is not ready yet return
     if(inputBuffer == NULL) {
         return 0;
     }
-    
+
+    // create a black surface
+    waveform = SDL_CreateRGBSurface(SDL_SWSURFACE,WINDOW_X,WINDOW_Y,32,0,0,0,0);
+
     for(i=0;i<framesPerBuffer;i++) {
-        //Set output to input
+        // make sure the x does not leave the screen
+        int x = i%WINDOW_X;
+        // calculate the y values (centered) and make sure y does not
+        // leave the screen
+        int y = abs((int)(*output*WINDOW_Y/2.0 + WINDOW_Y/2.0) % WINDOW_Y);
+        // Put a pixel for the current value to the surface
+        DrawPixel(waveform, x, y, data->color);
+
+        // Set output to input
         *output++ = *input++;
-        //twice because we get a sterio signal
+        // twice because we get a sterio signal
         *output++ = *input++;
     }
+
+    // Apply image to screen
+    SDL_BlitSurface(waveform, NULL, data->screen, NULL);
+    // Update Screen
+    SDL_Flip(data->screen);
+    // kill the surface
+    SDL_FreeSurface(waveform);
+
     return 0;
 }
 
 int main(int argc, char** argv)
 {
+    // surface that will hold the waveform and the background
+    //SDL_Surface *waveform = NULL;
+    SDL_Surface *screen = NULL;
+
+    // initialize SDL video subsystem
+    if(  SDL_Init(SDL_INIT_VIDEO) == -1 ) {
+        return EXIT_FAILURE;
+    }
+
+    // Set up the screen with WINDOW_X*WINDOW_Y px size, 32 bit color and a
+    // softwaresurface
+    screen = SDL_SetVideoMode(WINDOW_X, WINDOW_Y, 32, SDL_SWSURFACE);
+    if( screen == NULL ) {
+        return EXIT_FAILURE;
+    }
+
+    // Set the window caption
+    SDL_WM_SetCaption( "Echo-Audio v0.1", NULL );
+
+    // Fill user data struct
+    paUserData data;
+    data.screen = screen;
+    data.color = SDL_MapRGB(screen->format,0x00,0xFF,0x00);
+
+
+    // var for errorCode and the stream that will be used
     PaError errorCode;
     PaStream *stream;
-    
-	//initialize internal structures of portaudio
+    // initialize internal structures of portaudio
     errorCode = Pa_Initialize();
     if (errorCode != paNoError) {
         fprintf(stderr, "FUUUUUUU... %s\n", Pa_GetErrorText(errorCode));
         return EXIT_FAILURE;
     }
-    
+
     // Open the default input and output devices with 2 chanels per
-    // device, outputformat Float 32bit, 44100 hz samplerate and 512
-    // frames per buffer. callMeBack is the callbackfunction and no
-    // userdata is supplied
-    errorCode = Pa_OpenDefaultStream(&stream,2,2,paFloat32,44100.0,512,callMeBack,NULL);
+    // device, outputformat Float 32bit, 44100 hz samplerate and 
+    // FRAMES_PER_BUFFER frames per buffer. callMeBack is the
+    // callbackfunction and no userdata is supplied
+    errorCode = Pa_OpenDefaultStream(&stream,2,2,paFloat32,44100.0,FRAMES_PER_BUFFER,callMeBack,&data);
     if (errorCode != paNoError) {
         fprintf(stderr, "FUUUUUUU... %s\n", Pa_GetErrorText(errorCode));
         Pa_Terminate();
         return EXIT_FAILURE;
     }
-    
-    //Start stream processing
+
+    // Start stream processing
     errorCode = Pa_StartStream(stream);
     if (errorCode != paNoError) {
         fprintf(stderr, "FUUUUUUU... %s\n", Pa_GetErrorText(errorCode));
@@ -82,16 +149,20 @@ int main(int argc, char** argv)
         Pa_Terminate();
         return EXIT_FAILURE;
     }
-    
-    //Wait for 20sec
-    //TODO: make a wait for signal
+
+    // Wait for 20sec
+    // TODO: make a wait for signal
     Pa_Sleep(20000);
-    
-    //Stop the stream
+
+    // Stop the stream
     Pa_StopStream(stream);
-    //Close the stream
+    // Close the stream
     Pa_CloseStream(stream);
-    //Kill Portaudio
+    // Kill Portaudio
     Pa_Terminate();
-	return EXIT_SUCCESS;
+
+    // Quit SDL
+    SDL_Quit();
+
+    return EXIT_SUCCESS;
 }
