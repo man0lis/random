@@ -95,8 +95,7 @@ static int callMeBack(void *inputBuffer,
 
 int main(int argc, char** argv)
 {
-    // surface that will hold the waveform and the background
-    //SDL_Surface *waveform = NULL;
+    // surface that will hold the background
     SDL_Surface *screen = NULL;
 
     // initialize SDL video subsystem
@@ -112,7 +111,7 @@ int main(int argc, char** argv)
     }
 
     // Set the window caption
-    SDL_WM_SetCaption( "Echo-Audio v0.1", NULL );
+    SDL_WM_SetCaption("Echo-Audio v0.1", NULL);
 
     // Fill user data struct
     paUserData data;
