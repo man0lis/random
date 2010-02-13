@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include "portaudio.h"
 #include "SDL/SDL.h"
+#include <signal.h>
 
 typedef struct
 {
@@ -33,6 +34,10 @@ paUserData;
 #define WINDOW_X 1024
 #define WINDOW_Y 200
 #define FRAMES_PER_BUFFER 1024
+
+void signalCallback(int i) {
+    stop=1;
+}
 
 // function that draws a single pixel to a surface
 void DrawPixel(SDL_Surface *Surface, int x, int y,Uint16 color)
@@ -95,6 +100,8 @@ static int callMeBack(void *inputBuffer,
 
 int main(int argc, char** argv)
 {
+    signal(SIGINT, signalCallback);
+    
     // surface that will hold the background
     SDL_Surface *screen = NULL;
 
@@ -149,10 +156,10 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    // Wait for 20sec
-    // TODO: make a wait for signal
-    Pa_Sleep(20000);
-
+    while (!stop) {
+        Pa_Sleep(300);
+    }
+    
     // Stop the stream
     Pa_StopStream(stream);
     // Close the stream
@@ -162,6 +169,8 @@ int main(int argc, char** argv)
 
     // Quit SDL
     SDL_Quit();
+
+    printf("Bye.\n");
 
     return EXIT_SUCCESS;
 }
