@@ -1,0 +1,11 @@
+#!/bin/sh
+# Written by Robin Nehls <nehls@mi.fu-berlin.de>
+# This is GPLV2 code
+
+[ -z "$1" ] && \
+echo "Usage: $0 [path/to/.o]" && exit 1
+
+[ ! -e "$1" ] && \
+echo "$1: Could not open." && exit 1
+
+objdump -d $1 | grep -E '[0-9a-f]+:' | sed -e 's/......//;s/\t.*//' | xargs echo | sed -e 's/^/ /;s/ /\\x/g'
