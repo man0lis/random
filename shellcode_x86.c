@@ -23,6 +23,6 @@ char shellcode[] =
 void main() {
     int (*funct)();
     funct = (int (*)()) shellcode;
-    printf("Shellcode lenght=%d\n",strlen(shellcode));
+    printf("Shellcode length=%d\n",strlen(shellcode));
     (int)(*funct)();
 }

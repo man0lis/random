@@ -24,7 +24,7 @@ const char shellcode[] =
 int main() {
     int (*funct)();
     funct = (int (*)()) shellcode;
-    printf("Shellcode lenght=%d\n",(int)strlen(shellcode));
+    printf("Shellcode length=%d\n",(int)strlen(shellcode));
     (int)(*funct)();
     return 0;
 }
