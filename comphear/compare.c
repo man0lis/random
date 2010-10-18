@@ -22,9 +22,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MIN( a, b ) ( ((a) < (b)) ? (a) : (b) )
-
-
 // This functions compares 2 strings and returns how many char are the 
 // same in percent. Stings may have different length. In this case chars
 // will be compared until one sting runs out of chars

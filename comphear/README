@@ -1,0 +1,7 @@
+This tool generates fingerprints of audiofiles using libofa
+and compares the resulting pints in different ways.
+The program is partly derived from the libofa example and
+licensed under the GPL.
+
+How to build?
+Install libofa and type make
