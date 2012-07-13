@@ -47,7 +47,7 @@ int print_with_line(char* str)
 int main(int argc, char** argv)
 {
 	if (argc < 3) {
-		printf("Use: %s <number> <limit> [-q]\n",argv[0]);
+		printf("Use: %s <number> <limit> [-v]\n",argv[0]);
 		return 1;
 	}
 	
@@ -68,13 +68,17 @@ int main(int argc, char** argv)
 		//Multiplay the numbers
 		mpz_mul(result,input,result);
 		//Write result to stout if output is not disabled
-		if (argc == 3) {
-			sprintf(str,"-[ n^%d ]-",i);
+		if (argc == 4) {
+			sprintf(str,"-[ %s^%d ]-",argv[1],i);
 			print_with_line(str);
 			mpz_out_str(NULL,10,result);
 			printf("\n");
 		}
 	}
+
+    printf("\nresult: ");
+    mpz_out_str(NULL,10,result);
+    printf("\n");
 	
 	//Clean up
 	mpz_clear(result);
