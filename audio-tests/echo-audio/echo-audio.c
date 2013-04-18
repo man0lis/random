@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "portaudio.h"
 #include "SDL/SDL.h"
 #include "complex.h"
@@ -57,10 +58,10 @@ void DrawPixel(SDL_Surface *Surface, int x, int y,Uint16 color)
 
 // this callbackfunction is called by portaudio whenever a new buffer
 // is ready for processing
-static int callMeBack(void *inputBuffer,
+static int callMeBack(const void *inputBuffer,
                       void *outputBuffer,
                       unsigned long framesPerBuffer,
-                      PaStreamCallbackTimeInfo* timeInfo,
+                      const PaStreamCallbackTimeInfo* timeInfo,
                       PaStreamCallbackFlags statusFlags,
                       void *userData
                      )
@@ -104,14 +105,18 @@ static int callMeBack(void *inputBuffer,
         if (creal(out[i])>max) max = creal(out[i]);
     }
     
-    for(i=0;i<framesPerBuffer;i++) {
+    for(i=0;i<framesPerBuffer/2;i++) {
         // make sure the x does not leave the screen
-        int x = i%WINDOW_X;
+        int x = (int)(log(i)*WINDOW_X/7) % WINDOW_X;
         // calculate the y values (centered) and make sure y does not
         // leave the screen
         int y = abs((int)((creal(out[i])/max)*WINDOW_Y)) % WINDOW_Y;
-        // Put a pixel for the current value to the surface
-        DrawPixel(waveform, x, y, data->color2);
+
+        int j;
+        for(j=0;j<y;j++) {
+            // Put a pixel for the current value to the surface
+            DrawPixel(waveform, x, WINDOW_Y-j-1, data->color2);
+        }
     }    
 
     // Apply image to screen
