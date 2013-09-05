@@ -61,7 +61,7 @@ stop() {
     sleep 5
     sudo -u seafile -H bash -l -c "$STOP_SEAFILE"
     ## Remove PIDs.
-    rm /tmp/seafile*.pid >> /dev/null
+    rm $SEAFILE_PID >> /dev/null
     echo "$DESC stopped"
   else
     ## Program is not running, exit with error.
@@ -78,7 +78,7 @@ restart() {
     sudo -u seafile -H bash -l -c "$STOP_SEAHUB"
     sleep 5
     sudo -u seafile -H bash -l -c "$STOP_SEAFILE"
-    rm /tmp/seafile*.pid >> /dev/null
+    rm $SEAFILE_PID >> /dev/null
     if [ `whoami` = root ]; then
       sudo -u seafile -H bash -l -c "$START_SEAFILE"
       sudo -u seafile -H bash -l -c "$START_SEAHUB"
